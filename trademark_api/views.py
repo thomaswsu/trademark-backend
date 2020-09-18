@@ -1,4 +1,3 @@
-from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.models import User, AnonymousUser
 
@@ -20,11 +19,16 @@ class ExampleView(APIView):
 class AuthenticatedUserView(APIView):
     permission_classes = [IsAuthenticated,]
     def get(self, request):
-        content = {'id': request.user.id, 'username': request.user.username, 'email': request.user.email}                                                                                                                                                                                                                                                                                                                                                   
+        content = {
+            'id': request.user.id,
+            'email': request.user.email,
+            'username': request.user.username,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        }                                                                                                                                                                                                                                                                                                                                                   
         return Response(content)
 
 class AnonymousUserView(APIView):
-    # permission_classes = [IsAnonymous,]
     def post(self, request):
         if not isinstance(request.user, AnonymousUser):
             content = {'message': 'Logged in users are unable to create other accounts.'}                                                                                                                                                                                                                                                                                                                                                   
@@ -34,6 +38,8 @@ class AnonymousUserView(APIView):
             user = User.objects.create(
                 email = serialized.validated_data.get('email'),
                 username = serialized.validated_data.get('username'),
+                first_name = serialized.validated_data.get('first_name'),
+                last_name = serialized.validated_data.get('last_name'),
             )
             user.set_password(str(serialized.validated_data.get('password')))
             user.save()
