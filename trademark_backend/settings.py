@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'trademark_backend.apps.trademark_api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
