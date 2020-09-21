@@ -1,0 +1,3 @@
+[submodule "alpaca-trade-api-python"]
+	path = alpaca-trade-api-python
+	url = https://github.com/alpacahq/alpaca-trade-api-python.git
