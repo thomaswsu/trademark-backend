@@ -25,5 +25,5 @@ urlpatterns = [
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/new_user', views.AnonymousUserView.as_view(), name='create_user'),
-    path('api/auth/user', views.AuthenticatedUserView.as_view(), name='user')
+    path('api/auth/user', views.UserView.as_view(), name='user')
 ]
