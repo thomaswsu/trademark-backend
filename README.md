@@ -21,6 +21,7 @@ git clone https://github.com/thomaswsu/trademark-backend.git
 ## Run Database Migrations
 
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 
@@ -47,7 +48,9 @@ curl --location --request POST 'http://127.0.0.1:8000/api/auth/new_user' \
 	"email": <email>,
 	"password": <password>,
 	"first_name": <first-name>,
-	"last_name": <last-name>
+	"last_name": <last-name>,
+	"alpaca_key_id": <alpaca_key_id>,
+	"alpaca_secret_key", <alpaca_secret_key>
 }'
 ```
 
