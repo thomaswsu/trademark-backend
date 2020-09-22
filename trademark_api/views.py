@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import AnonymousUser
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from trademark_backend.serializers import UserSerializer
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # Create your views here.
 
@@ -16,15 +20,17 @@ class ExampleView(APIView):
         content = {'message': 'Authenticated users can see this.'}
         return Response(content)
 
-class AuthenticatedUserView(APIView):
+class UserView(APIView):
     permission_classes = [IsAuthenticated,]
     def get(self, request):
         content = {
             'id': request.user.id,
             'email': request.user.email,
-            'username': request.user.username,
             'first_name': request.user.first_name,
             'last_name': request.user.last_name,
+            # TODO: Decide if this should be included in user data endpoint
+            # 'alpaca_key_id': request.user.alpaca_key_id,
+            # 'alpaca_secret_key': request.user.alpaca_secret_key
         }                                                                                                                                                                                                                                                                                                                                                   
         return Response(content)
 
@@ -37,9 +43,10 @@ class AnonymousUserView(APIView):
         if serialized.is_valid():
             user = User.objects.create(
                 email = serialized.validated_data.get('email'),
-                username = serialized.validated_data.get('username'),
                 first_name = serialized.validated_data.get('first_name'),
                 last_name = serialized.validated_data.get('last_name'),
+                alpaca_key_id = serialized.validated_data.get('alpaca_key_id'),
+                alpaca_secret_key = serialized.validated_data.get('alpaca_secret_key'),
             )
             user.set_password(str(serialized.validated_data.get('password')))
             user.save()
