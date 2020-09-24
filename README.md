@@ -50,7 +50,7 @@ curl --location --request POST 'http://127.0.0.1:8000/api/auth/new_user' \
 	"first_name": <first-name>,
 	"last_name": <last-name>,
 	"alpaca_key_id": <alpaca_key_id>,
-	"alpaca_secret_key", <alpaca_secret_key>
+	"alpaca_secret_key": <alpaca_secret_key>
 }'
 ```
 
@@ -60,7 +60,7 @@ curl --location --request POST 'http://127.0.0.1:8000/api/auth/new_user' \
 curl --location --request POST 'http://127.0.0.1:8000/api/auth/token/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-	"username": <username>,
+	"email": <email>,
 	"password": <password>
 }'
 ```
