@@ -1,5 +1,12 @@
+import json
+
 from django.shortcuts import render
+
+from django.core.validators import validate_email
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.password_validation import validate_password, password_changed, get_password_validators
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -7,8 +14,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from trademark_backend.serializers import UserSerializer
-
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -33,6 +38,29 @@ class UserView(APIView):
             # 'alpaca_secret_key': request.user.alpaca_secret_key
         }                                                                                                                                                                                                                                                                                                                                                   
         return Response(content)
+    def patch(self, request):
+        body = json.loads(request.body)
+        user = User.objects.get(id=request.user.id)
+        if 'password' in body and request.user.check_password(body['password']):
+            # should consider validation
+            if 'new_email' in body:
+                try:
+                    validate_email(body['new_email'])
+                    user.email = body['new_email']
+                    user.save()
+                except Exception as e:
+                    return Response({'new_email': e.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
+            if 'new_password' in body:
+                try:
+                    v = validate_password(password=body['new_password'], user=request.user)
+                    user.set_password(str(body['new_password']))
+                    user.save()
+                    password_changed(password=body['new_password'], user=request.user)
+                except Exception as e:
+                    return Response({'new_password': e.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'User data updated successfully.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'password': 'Incorrect password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class AnonymousUserView(APIView):
     def post(self, request):
