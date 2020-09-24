@@ -33,11 +33,8 @@ class UserView(APIView):
             'email': request.user.email,
             'first_name': request.user.first_name,
             'last_name': request.user.last_name,
-            # TODO: Decide if this should be included in user data endpoint
-            # 'alpaca_key_id': request.user.alpaca_key_id,
-            # 'alpaca_secret_key': request.user.alpaca_secret_key
         }                                                                                                                                                                                                                                                                                                                                                   
-        return Response(content)
+        return Response(content, status=status.HTTP_200_OK)
     def patch(self, request):
         body = json.loads(request.body)
         user = User.objects.get(id=request.user.id)
@@ -73,11 +70,9 @@ class AnonymousUserView(APIView):
                 email = serialized.validated_data.get('email'),
                 first_name = serialized.validated_data.get('first_name'),
                 last_name = serialized.validated_data.get('last_name'),
-                alpaca_key_id = serialized.validated_data.get('alpaca_key_id'),
-                alpaca_secret_key = serialized.validated_data.get('alpaca_secret_key'),
             )
             user.set_password(str(serialized.validated_data.get('password')))
             user.save()
-            return Response(serialized.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
