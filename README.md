@@ -73,3 +73,19 @@ Use the value of the "access" field returned by the token endpoint in the Author
 curl --location --request GET 'http://127.0.0.1:8000/api/auth/user' \
 --header 'Authorization: Bearer <access-token>'
 ```
+
+## Update User Info
+
+Update the user's email and password using the user PATCH endpoint. Each feild is optiona,
+so you can update either the email, password, or both. Be sure to include the current password.
+
+```bash
+curl --location --request GET 'http://127.0.0.1:8000/api/auth/user' \
+--header 'Authorization: Bearer <access-token>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"password": <password>,
+	"new_email": <new_email>,
+	"new_password": <new_password>
+}'
+```
