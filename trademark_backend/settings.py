@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+AUTH_USER_MODEL = 'trademark_api.User'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
