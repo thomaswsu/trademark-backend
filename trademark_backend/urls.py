@@ -21,10 +21,9 @@ from trademark_api import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path('example/', views.ExampleView.as_view(), name='example'),
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/new_user', views.AnonymousUserView.as_view(), name='create_user'),
-    path('api/auth/user', views.UserView.as_view(), name='user'),
-    path('api/order', views.CreateOrderView.as_view(), name='create_order'),
-    path('api/order/<order_id>', views.OrderView.as_view(), name='order'),
+    path('api/auth/user', views.UserView.as_view(), name='user')
 ]
