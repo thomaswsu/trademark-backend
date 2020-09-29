@@ -85,7 +85,16 @@ class CreateOrderView(APIView):
                 time_in_force = serialized.validated_data.get('time_in_force'),
             )
             order.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({
+                'id': order.id,
+                'action_type': order.action_type,
+                'order_type': order.order_type,
+                'execution_price': order.execution_price,
+                'time_in_force': order.time_in_force,
+                'filled': order.filled,
+                'filled_at': order.filled_at,
+                'cancelled': order.cancelled
+            }, status=status.HTTP_201_CREATED)
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,6 +131,8 @@ class OrderView(APIView):
                 'filled_at': order.filled_at,
                 'cancelled': order.cancelled
             }
+        order.updateOrderStatus()
+        order.save()
         return Response(content, status=status.HTTP_200_OK)
     def delete(self, request, order_id):
         try:

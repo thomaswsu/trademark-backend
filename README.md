@@ -115,7 +115,7 @@ curl --location --request PUT 'http://127.0.0.1:8000/api/order' \
 }'
 ```
 
-To get all orders, use the following endpoint. This will return a list of orders with their id's.
+To get all orders, use the following endpoint. This will return a list of orders with their id and other useful info, for later use.
 ```bash
 curl --location --request GET 'http://127.0.0.1:8000/api/order/all' \
 --header 'Authorization: Bearer <access-token>'
