@@ -92,13 +92,16 @@ curl --location --request PATCH 'http://127.0.0.1:8000/api/auth/user' \
 To create a new order, the following request can be sent.
 
 The action-type should be a "B" for a buy and "S" for a sell order.
+
 The order-type should be one of the following: 'M' for 'Market', 'L' for 'Limit'
-The execution_price is the price either set for a Limit order or the current price at time of a market order
+
+The execution-price is the price either set for a Limit order or the current price at time of a market order
+
 The time-in-force can be one of the following options (refer to wikipedia for more info):
 - 'GFD' for 'Good For Day',
 - 'GTC' for 'Good Till Cancelled',
 - 'IOC' for 'Immediate or Cancel',
-- 'FOK' for 'Fill or Kill',
+- 'FOK' for 'Fill or Kill'
 
 ```bash
 curl --location --request PUT 'http://127.0.0.1:8000/api/order' \     
