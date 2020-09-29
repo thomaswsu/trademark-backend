@@ -131,7 +131,6 @@ Delete an order by id:
 
 > This does not completely delete the order from the database, just cancels the order and relays that to the broker
 
-To get a specific order by id:
 ```bash
 curl --location --request DELETE 'http://127.0.0.1:8000/api/order/<order-id>' \
 --header 'Authorization: Bearer <access-token>'
