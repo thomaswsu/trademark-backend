@@ -86,3 +86,47 @@ curl --location --request PATCH 'http://127.0.0.1:8000/api/auth/user' \
 	"new_password": <new_password>
 }'
 ```
+
+## Order Requests
+
+To create a new order, the following request can be sent.
+
+The action-type should be a "B" for a buy and "S" for a sell order.
+The order-type should be one of the following: 'M' for 'Market', 'L' for 'Limit'
+The execution_price is the price either set for a Limit order or the current price at time of a market order
+The time-in-force can be one of the following options (refer to wikipedia for more info):
+- 'GFD' for 'Good For Day',
+- 'GTC' for 'Good Till Cancelled',
+- 'IOC' for 'Immediate or Cancel',
+- 'FOK' for 'Fill or Kill',
+
+```bash
+curl --location --request PUT 'http://127.0.0.1:8000/api/order' \     
+--header 'Authorization: Bearer <access-token>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+        "action_type": <action-type>,
+		"order_type": <order-type>,
+		"execution_price": <execution-price>,
+		"time_in_force": <time-in-force>
+}'
+```
+
+To get all orders, use the following endpoint. This will return a list of orders with their id's.
+```bash
+curl --location --request GET 'http://127.0.0.1:8000/api/order/all' \
+--header 'Authorization: Bearer <access-token>'
+```
+
+To get a specific order by id:
+```bash
+curl --location --request GET 'http://127.0.0.1:8000/api/order/<order-id>' \
+--header 'Authorization: Bearer <access-token>'
+```
+
+Delete an order by id:
+To get a specific order by id:
+```bash
+curl --location --request DELETE 'http://127.0.0.1:8000/api/order/<order-id>' \
+--header 'Authorization: Bearer <access-token>'
+```

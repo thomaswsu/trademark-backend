@@ -89,29 +89,29 @@ class CreateOrderView(APIView):
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class OrdersView(APIView):
-    permission_classes = [IsAuthenticated,]
-    def get(self, request):
-        orders = Order.objects.filter(user=request.user.id)
-        content = {"orders": []}
-        for order in orders:
-            content["orders"].append({
-                'id': order.id,
-                'action_type': order.action_type,
-                'order_type': order.order_type,
-                'execution_price': order.execution_price,
-                'time_in_force': order.time_in_force,
-                'filled': order.filled,
-                'filled_at': order.filled_at,
-                'cancelled': order.cancelled
-            })
-        return Response(content, status=status.HTTP_200_OK)
-
 class OrderView(APIView):
     permission_classes = [IsAuthenticated,]
     def get(self, request, order_id):
-        order = Order.objects.get(id=order_id, user=request.user.id)
-        if order:
+        if order_id == "all":
+            orders = Order.objects.filter(user=request.user.id)
+            content = {"orders": []}
+            for order in orders:
+                content["orders"].append({
+                    'id': order.id,
+                    'action_type': order.action_type,
+                    'order_type': order.order_type,
+                    'execution_price': order.execution_price,
+                    'time_in_force': order.time_in_force,
+                    'filled': order.filled,
+                    'filled_at': order.filled_at,
+                    'cancelled': order.cancelled
+                })
+        else:
+            try:
+                order_id = int(order_id)
+                order = Order.objects.get(id=order_id, user=request.user.id)
+            except Exception as e:
+                return Response({"message": "Order not found."}, status=status.HTTP_400_BAD_REQUEST)
             content = {
                 'id': order_id,
                 'action_type': order.action_type,
@@ -122,14 +122,12 @@ class OrderView(APIView):
                 'filled_at': order.filled_at,
                 'cancelled': order.cancelled
             }
-            return Response(content, status=status.HTTP_200_OK)
-        else:
-            return Response({"message": "Order not found."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(content, status=status.HTTP_200_OK)
     def delete(self, request, order_id):
-        order = Order.objects.get(id=order_id, user=request.user.id)
-        if order:
-            order.cancelOrder()
-            order.save()
-            return Response(status=status.HTTP_202_ACCEPTED)
-        else:
+        try:
+            order = Order.objects.get(id=order_id, user=request.user.id)
+        except Exception as e:
             return Response({"message": "Order not found."}, status=status.HTTP_400_BAD_REQUEST)
+        order.cancelOrder()
+        order.save()
+        return Response(status=status.HTTP_202_ACCEPTED)
