@@ -60,9 +60,6 @@ class Order(models.Model):
         # call API to cancel
         self.cancelled = True
 
-<<<<<<< Updated upstream
-# Create your models here.
-=======
 class Portfolio(models.Model):
     # This is like ___init___
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -121,4 +118,3 @@ class Option(models.Model):
     def getContractValue():
         # Need to hook this up to API
         pass
->>>>>>> Stashed changes
