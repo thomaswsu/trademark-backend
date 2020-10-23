@@ -104,13 +104,15 @@ The time-in-force can be one of the following options (refer to wikipedia for mo
 - 'FOK' for 'Fill or Kill'
 
 ```bash
-curl --location --request PUT 'http://127.0.0.1:8000/api/order' \     
+curl --location --request PUT 'http://127.0.0.1:8000/api/order' \
 --header 'Authorization: Bearer <access-token>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
+		"ticker": <ticker>,
         "action_type": <action-type>,
 		"order_type": <order-type>,
 		"execution_price": <execution-price>,
+		"quantity": <quantity>,
 		"time_in_force": <time-in-force>
 }'
 ```

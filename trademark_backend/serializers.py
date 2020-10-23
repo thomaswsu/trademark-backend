@@ -13,4 +13,4 @@ class UserSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ["action_type", 'order_type', 'execution_price', 'time_in_force']
+        fields = ['ticker', 'action_type', 'order_type', 'execution_price', 'quantity', 'time_in_force']

@@ -79,17 +79,21 @@ class CreateOrderView(APIView):
         if serialized.is_valid():
             order = Order.objects.create(
                 user = request.user,
+                ticker = serialized.validated_data.get('ticker'),
                 action_type = serialized.validated_data.get('action_type'),
                 order_type = serialized.validated_data.get('order_type'),
                 execution_price = serialized.validated_data.get('execution_price'),
+                quantity = serialized.validated_data.get('quantity'),
                 time_in_force = serialized.validated_data.get('time_in_force'),
             )
             order.save()
             return Response({
                 'id': order.id,
+                'ticker': order.ticker,
                 'action_type': order.action_type,
                 'order_type': order.order_type,
                 'execution_price': order.execution_price,
+                'quantity': order.quantity,
                 'time_in_force': order.time_in_force,
                 'filled': order.filled,
                 'filled_at': order.filled_at,
@@ -107,9 +111,11 @@ class OrderView(APIView):
             for order in orders:
                 content["orders"].append({
                     'id': order.id,
+                    'ticker': order.ticker,
                     'action_type': order.action_type,
                     'order_type': order.order_type,
                     'execution_price': order.execution_price,
+                    'quantity': order.quantity,
                     'time_in_force': order.time_in_force,
                     'filled': order.filled,
                     'filled_at': order.filled_at,
@@ -123,9 +129,11 @@ class OrderView(APIView):
                 return Response({"message": "Order not found."}, status=status.HTTP_400_BAD_REQUEST)
             content = {
                 'id': order_id,
+                'ticker': order.ticker,
                 'action_type': order.action_type,
                 'order_type': order.order_type,
                 'execution_price': order.execution_price,
+                'quantity': order.quantity,
                 'time_in_force': order.time_in_force,
                 'filled': order.filled,
                 'filled_at': order.filled_at,
@@ -139,6 +147,7 @@ class OrderView(APIView):
             order = Order.objects.get(id=order_id, user=request.user.id)
         except Exception as e:
             return Response({"message": "Order not found."}, status=status.HTTP_400_BAD_REQUEST)
-        order.cancelOrder()
+        if not order.cancelOrder():
+            return Response({"message": "Order already filled or cancelled."}, status=status.HTTP_400_BAD_REQUEST)
         order.save()
         return Response(status=status.HTTP_202_ACCEPTED)
