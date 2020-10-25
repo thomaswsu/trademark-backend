@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from django.db.models.fields import CharField
+import alpaca_trade_api as tradeapi
+import threading
+import datetime
+import time
 
 class User(AbstractUser):
     username = None
@@ -15,6 +20,32 @@ class User(AbstractUser):
         self.investible_cash += amount
         # Check if decimals are fine?
         return(self.investible_cash)
+
+class Portfolio(models.Model):
+    # This is like ___init___
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    username = models.CharField(max_length=30)
+    currentBalance = models.DecimalField(max_digits=12, decimal_places=2)
+    securites = {} # This is a dictionary indexed by a ticker. 
+    # Example {AAPL :  100, IBM : 100} 
+    
+    def changeUsername(self, newUsername: str) -> str:
+        self.username = newUsername
+        return(self.username)
+
+    def addBalance(self, amountToAdd: models.DecimalField) -> models.DecimalField:
+        self.currentBalance += amountToAdd
+        # Check if decimals are fine? 
+        return(self.currentBalance)
+    
+    def addStock(self, ticker: models.CharField, numSecurities: models.IntegerField):
+        """
+        Note that a ticker can only be 5 characters long 
+        """
+        if ticker in self.securites:
+            self.securites[ticker] += numSecurities
+        else:
+            self.securites[ticker] = numSecurities
 
 class Order(models.Model):
     ACTION_TYPES = (
@@ -83,3 +114,47 @@ class Option(models.Model):
     def getContractValue():
         # Need to hook this up to API
         pass
+
+def stockAPI() -> None:
+    def ___init___(self):
+        ALPACA_API_KEY = "CONTACT THOMAS FOR KEY"
+        ALPACA_SECRET_KEY = "CONTACT THOMAS FOR KEY"
+        APCA_API_BASE_URL = "https://paper-api.alpaca.markets"
+        
+        self.alpaca = tradeapi.REST(ALPACA_API_KEY, ALPACA_SECRET_KEY, APCA_API_BASE_URL, 'v2')
+
+    def awaitMarketOpen(self):
+        isOpen = self.alpaca.get_clock().is_open
+        while(not isOpen):
+            clock = self.alpaca.get_clock()
+            openingTime = clock.next_open.replace(tzinfo=datetime.timezone.utc).timestamp()
+            currTime = clock.timestamp.replace(tzinfo=datetime.timezone.utc).timestamp()
+            timeToOpen = int((openingTime - currTime) / 60)
+            print(str(timeToOpen) + " minutes til market open.")
+            time.sleep(60)
+            isOpen = self.alpaca.get_clock().is_open
+
+    def run(self) -> None:
+        # Wait for market to open.
+        print("Waiting for market to open...")
+        tAMO = threading.Thread(target=self.awaitMarketOpen)
+        tAMO.start()
+        tAMO.join()
+        print("Market opened.")
+
+    def submitOrder(self, qty, stock, side, resp):
+        "Thanks AlpacaAPI"
+        if(qty > 0):
+            try:
+                self.alpaca.submit_order(stock, qty, side, "market", "day")
+                print("Market order of | " + str(qty) + " " + stock + " " + side + " | completed.")
+                resp.append(True)
+            except:
+                print("Order of | " + str(qty) + " " + stock + " " + side + " | did not go through.")
+                resp.append(False)
+            else:
+                print("Quantity is 0, order of | " + str(qty) + " " + stock + " " + side + " | not completed.")
+                resp.append(True)
+    
+
+        
