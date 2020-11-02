@@ -10,6 +10,7 @@ Trademark-backend is the project making up the server and API to the Trademark p
 pip install django
 pip install djangorestframework
 pip install djangorestframework-simplejwt
+pip install alpaca_trade_api
 ```
 
 ## Clone the Project
