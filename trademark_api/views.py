@@ -53,21 +53,28 @@ class UserView(APIView):
         user = User.objects.get(id=request.user.id)
         if 'password' in body and request.user.check_password(body['password']):
             # should consider validation
+            if 'alpaca_key_id' in  body:
+                user.alpaca_key_id = body['alpaca_key_id']
+                if not body['alpaca_key_id'] or len(body['alpaca_key_id']) > 64:
+                    return Response({'alpaca_key_id': "Must not be empty or longer than 64 characters"}, status=status.HTTP_400_BAD_REQUEST)
+            if 'alpaca_secret_key' in body:
+                user.alpaca_secret_key = body['alpaca_secret_key']
+                if not body['alpaca_secret_key'] or len(body['alpaca_secret_key']) > 64:
+                    return Response({'alpaca_secret_key': "Must not be empty or longer than 64 characters"}, status=status.HTTP_400_BAD_REQUEST)
             if 'new_email' in body:
                 try:
                     validate_email(body['new_email'])
                     user.email = body['new_email']
-                    user.save()
                 except Exception as e:
                     return Response({'new_email': e.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
             if 'new_password' in body:
                 try:
                     v = validate_password(password=body['new_password'], user=request.user)
                     user.set_password(str(body['new_password']))
-                    user.save()
                     password_changed(password=body['new_password'], user=request.user)
                 except Exception as e:
                     return Response({'new_password': e.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
+            user.save()
             return Response({'message': 'User data updated successfully.'}, status=status.HTTP_200_OK)
         else:
             return Response({'password': 'Incorrect password.'}, status=status.HTTP_401_UNAUTHORIZED)

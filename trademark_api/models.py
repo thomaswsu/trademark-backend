@@ -7,6 +7,8 @@ import datetime
 class User(AbstractUser):
     username = None
     email = models.EmailField('email address', blank=False, unique=True)
+    alpaca_key_id = models.CharField(max_length=64, blank=False, null=True)
+    alpaca_secret_key = models.CharField(max_length=64, blank=False, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
