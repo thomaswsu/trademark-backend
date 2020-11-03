@@ -77,6 +77,8 @@ curl --location --request GET 'http://127.0.0.1:8000/api/auth/user' \
 Update the user's email and password using the user PATCH endpoint. Each feild is optiona,
 so you can update either the email, password, or both. Be sure to include the current password.
 
+API Keys: At login, users will not be asked for relevant api keys... these are added using this endpoint. This approach encourages use of multiple trading APIs/brokerages under our platform to increase usability
+
 ```bash
 curl --location --request PATCH 'http://127.0.0.1:8000/api/auth/user' \
 --header 'Authorization: Bearer <access-token>' \
@@ -84,7 +86,9 @@ curl --location --request PATCH 'http://127.0.0.1:8000/api/auth/user' \
 --data-raw '{
 	"password": <password>,
 	"new_email": <new_email>,
-	"new_password": <new_password>
+	"new_password": <new_password>,
+	"alpaca_key_id": <alpaca_key_id>,
+	"alpaca_secret_key": <alpaca_secret_key>
 }'
 ```
 
