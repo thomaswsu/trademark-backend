@@ -1,6 +1,11 @@
 # Trademark-Backend!
 
 Trademark-backend is the project making up the server and API to the Trademark project.
+The frontend to the project can be found here: https://github.com/henryjeff/trademark-frontend
+
+Trademark is a platform that makes investing easy. Trademark serves stock trading recommendations to the user, easing new investors into the stock market. Users can buy and sell individual stocks based off recommendations. 
+
+Trademark uses the Alpaca API which can be found here: https://github.com/alpacahq/alpaca-trade-api-python
 
 # Development Guide
 
